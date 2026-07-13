@@ -59,10 +59,10 @@ export function KanbanColumn({
       <div
         ref={innerRef}
         {...droppableProps}
-        className="flex flex-col gap-2 p-3 min-h-[120px]"
+        className="grid grid-cols-2 gap-2 p-3 min-h-[120px]"
       >
         {cards.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-white/10 py-8">
+          <div className="col-span-2 flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-white/10 py-8">
             <p className="text-xs text-muted-foreground">
               Arraste cards para cá
             </p>
