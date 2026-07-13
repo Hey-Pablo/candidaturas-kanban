@@ -167,7 +167,7 @@ export function KanbanBoard() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2">
             <img
-              src="/logo.png"
+              src="logo.png"
               alt="logo"
               className="h-7 w-7 rounded-lg object-contain"
             />

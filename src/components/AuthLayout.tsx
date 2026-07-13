@@ -17,7 +17,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
           <div className="text-center space-y-3">
             <div className="mx-auto h-16 w-16 rounded-xl bg-indigo-500/10 flex items-center justify-center p-1.5">
               <img
-                src="/logo.png"
+                src="logo.png"
                 alt="Candidaturas Kanban"
                 className="h-full w-full object-contain rounded-lg"
               />
