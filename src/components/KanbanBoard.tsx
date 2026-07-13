@@ -4,7 +4,7 @@ import {
   Droppable,
   type DropResult,
 } from "@hello-pangea/dnd";
-import { Plus, Database, AlertCircle, LogOut, User } from "lucide-react";
+import { Plus, Database, AlertCircle, LogOut, User, XCircle } from "lucide-react";
 
 import { type JobCard, type ColumnId, COLUNAS } from "@/types";
 import { useSupabaseCards } from "@/hooks/useSupabaseCards";
@@ -30,6 +30,7 @@ export function KanbanBoard() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<JobCard | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
   const [paginas, setPaginas] = useState<Record<ColumnId, number>>({
     applied: 0,
     interview: 0,
@@ -77,13 +78,28 @@ export function KanbanBoard() {
   }
 
   async function handleSave(card: Omit<JobCard, "id">) {
-    if (editingCard) {
-      await atualizarCard({ ...card, id: editingCard.id });
-    } else {
-      await salvarCard(card);
+    setErro(null);
+    try {
+      if (editingCard) {
+        await atualizarCard({ ...card, id: editingCard.id });
+      } else {
+        await salvarCard(card);
+      }
+      setEditingCard(null);
+      setDialogOpen(false);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Erro desconhecido ao salvar";
+      if (msg.includes("validade")) {
+        setErro(
+          "A coluna 'validade' ainda não existe no banco de dados. " +
+            "Execute o SQL abaixo no Supabase:\n\n" +
+            "ALTER TABLE cards ADD COLUMN validade TEXT NOT NULL DEFAULT '';"
+        );
+      } else {
+        setErro(msg);
+      }
     }
-    setEditingCard(null);
-    setDialogOpen(false);
   }
 
   function handleEdit(card: JobCard) {
@@ -232,6 +248,27 @@ export function KanbanBoard() {
           </div>
         </div>
       </header>
+
+      {/* Error banner */}
+      {erro && (
+        <div className="mx-auto max-w-7xl px-2 sm:px-4 pt-4">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 flex items-start gap-3">
+            <XCircle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-red-300">Erro ao salvar</p>
+              <pre className="mt-1 text-xs text-red-200/80 whitespace-pre-wrap font-mono">
+                {erro}
+              </pre>
+            </div>
+            <button
+              onClick={() => setErro(null)}
+              className="text-red-300 hover:text-red-100"
+            >
+              <XCircle className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
