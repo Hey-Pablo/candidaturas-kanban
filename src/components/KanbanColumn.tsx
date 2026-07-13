@@ -1,10 +1,16 @@
 import type { DroppableProvidedProps } from "@hello-pangea/dnd";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Column, JobCard } from "@/types";
 import { KanbanCard } from "./KanbanCard";
 
 interface KanbanColumnProps {
   column: Column;
   cards: JobCard[];
+  totalCards: number;
+  paginaAtual: number;
+  totalPaginas: number;
+  onAvancar: () => void;
+  onVoltar: () => void;
   innerRef: (el: HTMLElement | null) => void;
   droppableProps: DroppableProvidedProps;
   isDraggingOver: boolean;
@@ -16,6 +22,11 @@ interface KanbanColumnProps {
 export function KanbanColumn({
   column,
   cards,
+  totalCards,
+  paginaAtual,
+  totalPaginas,
+  onAvancar,
+  onVoltar,
   innerRef,
   droppableProps,
   isDraggingOver,
@@ -39,7 +50,7 @@ export function KanbanColumn({
             {column.titulo}
           </h2>
           <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/10 px-1.5 text-xs font-medium">
-            {cards.length}
+            {totalCards}
           </span>
         </div>
       </div>
@@ -69,6 +80,33 @@ export function KanbanColumn({
         )}
         {children}
       </div>
+
+      {/* Pagination */}
+      {totalCards > 10 && (
+        <div className="flex items-center justify-between border-t border-white/10 px-4 py-2.5">
+          <button
+            onClick={onVoltar}
+            disabled={paginaAtual === 0}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="h-3.5 w-3.5" />
+            Anterior
+          </button>
+
+          <span className="text-[10px] text-muted-foreground/60">
+            {paginaAtual + 1} de {totalPaginas}
+          </span>
+
+          <button
+            onClick={onAvancar}
+            disabled={paginaAtual >= totalPaginas - 1}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            Próximo
+            <ChevronRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,6 +14,8 @@ import { KanbanColumn } from "./KanbanColumn";
 import { CardDialog } from "./CardDialog";
 import { ExportButton } from "./ExportButton";
 
+const CARDS_POR_PAGINA = 10;
+
 export function KanbanBoard() {
   const { user, signOut } = useAuth();
   const {
@@ -28,9 +30,39 @@ export function KanbanBoard() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<JobCard | null>(null);
+  const [paginas, setPaginas] = useState<Record<ColumnId, number>>({
+    saved: 0,
+    applied: 0,
+    interview: 0,
+    closed: 0,
+  });
 
   function getCards(coluna: ColumnId) {
     return cards.filter((c) => c.coluna === coluna);
+  }
+
+  function totalPaginas(coluna: ColumnId) {
+    return Math.max(1, Math.ceil(getCards(coluna).length / CARDS_POR_PAGINA));
+  }
+
+  function getCardsPaginados(coluna: ColumnId) {
+    const todos = getCards(coluna);
+    const inicio = paginas[coluna] * CARDS_POR_PAGINA;
+    return todos.slice(0, inicio + CARDS_POR_PAGINA);
+  }
+
+  function avancarPagina(coluna: ColumnId) {
+    setPaginas((prev) => ({
+      ...prev,
+      [coluna]: Math.min(prev[coluna] + 1, totalPaginas(coluna) - 1),
+    }));
+  }
+
+  function voltarPagina(coluna: ColumnId) {
+    setPaginas((prev) => ({
+      ...prev,
+      [coluna]: Math.max(0, prev[coluna] - 1),
+    }));
   }
 
   function handleDragEnd(result: DropResult) {
@@ -211,7 +243,12 @@ export function KanbanBoard() {
                 {(provided, snapshot) => (
                   <KanbanColumn
                     column={coluna}
-                    cards={getCards(coluna.id)}
+                    cards={getCardsPaginados(coluna.id)}
+                    totalCards={getCards(coluna.id).length}
+                    paginaAtual={paginas[coluna.id]}
+                    totalPaginas={totalPaginas(coluna.id)}
+                    onAvancar={() => avancarPagina(coluna.id)}
+                    onVoltar={() => voltarPagina(coluna.id)}
                     innerRef={provided.innerRef}
                     droppableProps={provided.droppableProps}
                     isDraggingOver={snapshot.isDraggingOver}

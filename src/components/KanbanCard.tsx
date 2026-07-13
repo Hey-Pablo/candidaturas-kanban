@@ -2,6 +2,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { Pencil, Trash2, ExternalLink } from "lucide-react";
 
 import { type JobCard, CORES_ETIQUETA_BG } from "@/types";
+import { formatarData } from "@/lib/date";
 
 interface KanbanCardProps {
   card: JobCard;
@@ -46,7 +47,7 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
           {/* Data */}
           {card.data && (
             <p className="mt-1 text-[10px] text-muted-foreground/60">
-              {new Date(card.data).toLocaleDateString("pt-BR")}
+              {formatarData(card.data)}
             </p>
           )}
 
