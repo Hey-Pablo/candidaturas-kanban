@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,11 @@ export function LoginPage() {
 
   // Se já está logado, redireciona pro kanban
   if (user) return <Navigate to="/" replace />;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [lembrar, setLembrar] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -61,15 +65,43 @@ export function LoginPage() {
                 Esqueceu a senha?
               </Link>
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
           </div>
+
+          {/* Lembrar de mim */}
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={lembrar}
+              onChange={(e) => setLembrar(e.target.checked)}
+              className="h-4 w-4 rounded border-white/20 bg-white/5 accent-purple-600"
+            />
+            <span className="text-sm text-muted-foreground">
+              Lembrar de mim
+            </span>
+          </label>
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-sm text-red-400">
