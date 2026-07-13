@@ -237,7 +237,7 @@ export function KanbanBoard() {
       {/* Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {COLUNAS.map((coluna) => (
               <Droppable droppableId={coluna.id} key={coluna.id}>
                 {(provided, snapshot) => (

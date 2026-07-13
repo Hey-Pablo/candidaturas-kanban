@@ -50,7 +50,7 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`group rounded-lg border bg-card p-3 transition-all ${
+          className={`group rounded-lg border bg-card p-4 transition-all ${
             snapshot.isDragging
               ? "rotate-2 scale-105 shadow-xl shadow-primary/20 border-primary/40"
               : card.validade && card.validade < new Date().toISOString().split("T")[0]
@@ -64,7 +64,7 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
           </div>
 
           {/* Título */}
-          <h3 className="font-semibold text-sm leading-tight">{card.cargo}</h3>
+          <h3 className="font-semibold text-sm leading-snug">{card.cargo}</h3>
 
           {/* Empresa */}
           <p className="mt-0.5 text-xs text-muted-foreground">
@@ -92,15 +92,15 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="mt-1.5 inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
+              className="mt-2 inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3.5 w-3.5" />
               Link da vaga
             </a>
           )}
 
           {/* Actions */}
-          <div className="mt-2 flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="mt-3 flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
             <button
               onClick={(e) => {
                 e.stopPropagation();

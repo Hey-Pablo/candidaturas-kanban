@@ -59,7 +59,7 @@ export function KanbanColumn({
       <div
         ref={innerRef}
         {...droppableProps}
-        className="grid grid-cols-2 gap-2 p-3 min-h-[120px]"
+        className="grid grid-cols-2 gap-3 p-4 min-h-[120px]"
       >
         {cards.length === 0 ? (
           <div className="col-span-2 flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-white/10 py-8">
