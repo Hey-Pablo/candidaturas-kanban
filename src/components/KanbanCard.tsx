@@ -50,7 +50,7 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`group rounded-lg border bg-card p-4 transition-all ${
+          className={`group rounded-lg border bg-card px-5 py-4 transition-all ${
             snapshot.isDragging
               ? "rotate-2 scale-105 shadow-xl shadow-primary/20 border-primary/40"
               : card.validade && card.validade < new Date().toISOString().split("T")[0]

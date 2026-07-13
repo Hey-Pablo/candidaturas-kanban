@@ -1,4 +1,4 @@
-export type ColumnId = "saved" | "applied" | "interview" | "closed";
+export type ColumnId = "applied" | "interview" | "closed";
 
 export interface JobCard {
   id: string;
@@ -18,7 +18,6 @@ export interface Column {
 }
 
 export const COLUNAS: Column[] = [
-  { id: "saved", titulo: "Salvas", icone: "📌" },
   { id: "applied", titulo: "Inscrições", icone: "📝" },
   { id: "interview", titulo: "Entrevista", icone: "🎯" },
   { id: "closed", titulo: "Encerradas", icone: "✅" },

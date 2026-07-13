@@ -33,7 +33,7 @@ export function CardDialog({
   const [data, setData] = useState("");
   const [validade, setValidade] = useState("");
   const [notas, setNotas] = useState("");
-  const [coluna, setColuna] = useState<ColumnId>("saved");
+  const [coluna, setColuna] = useState<ColumnId>("applied");
 
   useEffect(() => {
     if (card) {
@@ -51,7 +51,7 @@ export function CardDialog({
       setData(new Date().toISOString().split("T")[0]);
       setValidade("");
       setNotas("");
-      setColuna("saved");
+      setColuna("applied");
     }
   }, [card, open]);
 
@@ -149,7 +149,6 @@ export function CardDialog({
               onChange={(e) => setColuna(e.target.value as ColumnId)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <option value="saved">📌 Salvas</option>
               <option value="applied">📝 Inscrições</option>
               <option value="interview">🎯 Entrevista</option>
               <option value="closed">✅ Encerradas</option>

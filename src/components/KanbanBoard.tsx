@@ -31,7 +31,6 @@ export function KanbanBoard() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<JobCard | null>(null);
   const [paginas, setPaginas] = useState<Record<ColumnId, number>>({
-    saved: 0,
     applied: 0,
     interview: 0,
     closed: 0,
@@ -158,7 +157,7 @@ export function KanbanBoard() {
   data TEXT NOT NULL DEFAULT '',
   validade TEXT NOT NULL DEFAULT '',
   notas TEXT NOT NULL DEFAULT '',
-  coluna TEXT NOT NULL DEFAULT 'saved',
+  coluna TEXT NOT NULL DEFAULT 'applied',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );`}
@@ -177,7 +176,7 @@ export function KanbanBoard() {
   data TEXT NOT NULL DEFAULT '',
   validade TEXT NOT NULL DEFAULT '',
   notas TEXT NOT NULL DEFAULT '',
-  coluna TEXT NOT NULL DEFAULT 'saved',
+  coluna TEXT NOT NULL DEFAULT 'applied',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );`
@@ -237,7 +236,7 @@ export function KanbanBoard() {
       {/* Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {COLUNAS.map((coluna) => (
               <Droppable droppableId={coluna.id} key={coluna.id}>
                 {(provided, snapshot) => (
