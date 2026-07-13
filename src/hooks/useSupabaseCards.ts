@@ -4,9 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import type { JobCard, ColumnId } from "@/types";
 
 function gerarBoardId(userId?: string): string {
-  // Se tem usuário logado, usa o UUID dele como board_id
   if (userId) return userId;
-  // Fallback: gera um board_id local (legado)
   let id = localStorage.getItem("kanban-board-id");
   if (!id) {
     id = crypto.randomUUID?.() ?? Math.random().toString(36).slice(2, 18);
@@ -22,7 +20,7 @@ function toJobCard(row: SupabaseCard): JobCard {
     cargo: row.cargo,
     link: row.link,
     data: row.data,
-    cor: row.cor,
+    validade: row.validade ?? "",
     notas: row.notas,
     coluna: row.coluna as ColumnId,
   };
@@ -58,7 +56,32 @@ export function useSupabaseCards() {
       }
 
       setTabelaExiste(true);
-      setCards((data as SupabaseCard[]).map(toJobCard));
+      const rows = data as SupabaseCard[];
+      const hoje = new Date().toISOString().split("T")[0];
+
+      // Auto-move: cards com validade vencida vão para Encerradas
+      const cardsAtualizados = rows.map((row) => {
+        if (
+          row.coluna !== "closed" &&
+          row.validade &&
+          row.validade < hoje
+        ) {
+          // Atualiza no banco silenciosamente
+          supabase
+            .from("cards")
+            .update({ coluna: "closed" })
+            .eq("id", row.id)
+            .eq("board_id", boardId)
+            .then((err) => {
+              if (err.error)
+                console.error("Erro ao mover card vencido:", err.error);
+            });
+          return { ...row, coluna: "closed" };
+        }
+        return row;
+      });
+
+      setCards(cardsAtualizados.map(toJobCard));
     } catch (err) {
       console.error("Erro ao conectar com Supabase:", err);
       setTabelaExiste(false);
@@ -81,7 +104,7 @@ export function useSupabaseCards() {
           cargo: card.cargo,
           link: card.link,
           data: card.data,
-          cor: card.cor,
+          validade: card.validade,
           notas: card.notas,
           coluna: card.coluna,
         })
@@ -109,7 +132,7 @@ export function useSupabaseCards() {
           cargo: card.cargo,
           link: card.link,
           data: card.data,
-          cor: card.cor,
+          validade: card.validade,
           notas: card.notas,
           coluna: card.coluna,
         })
@@ -146,7 +169,6 @@ export function useSupabaseCards() {
 
   const moverCard = useCallback(
     async (id: string, novaColuna: ColumnId) => {
-      // Otimista: atualiza local primeiro
       setCards((prev) =>
         prev.map((c) => (c.id === id ? { ...c, coluna: novaColuna } : c))
       );

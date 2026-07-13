@@ -1,7 +1,7 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { Pencil, Trash2, ExternalLink } from "lucide-react";
+import { Pencil, Trash2, ExternalLink, AlertTriangle, Clock } from "lucide-react";
 
-import { type JobCard, CORES_ETIQUETA_BG } from "@/types";
+import { type JobCard } from "@/types";
 import { formatarData } from "@/lib/date";
 
 interface KanbanCardProps {
@@ -11,9 +11,38 @@ interface KanbanCardProps {
   onDelete: (id: string) => void;
 }
 
-export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
-  const corClasse = CORES_ETIQUETA_BG[card.cor] ?? "";
+function StatusValidade({ validade }: { validade: string }) {
+  if (!validade) return null;
 
+  const hoje = new Date().toISOString().split("T")[0];
+
+  if (validade < hoje) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-medium text-red-400 border border-red-500/20">
+        <AlertTriangle className="h-3 w-3" />
+        Vencida
+      </span>
+    );
+  }
+
+  if (validade === hoje) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/15 px-2 py-0.5 text-[10px] font-medium text-yellow-400 border border-yellow-500/20">
+        <Clock className="h-3 w-3" />
+        Vence hoje
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20">
+      <Clock className="h-3 w-3" />
+      Vence {formatarData(validade)}
+    </span>
+  );
+}
+
+export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
   return (
     <Draggable draggableId={card.id} index={index}>
       {(provided, snapshot) => (
@@ -24,17 +53,15 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
           className={`group rounded-lg border bg-card p-3 transition-all ${
             snapshot.isDragging
               ? "rotate-2 scale-105 shadow-xl shadow-primary/20 border-primary/40"
-              : "border-white/10 hover:border-white/20"
+              : card.validade && card.validade < new Date().toISOString().split("T")[0]
+                ? "border-red-500/30 hover:border-red-500/50 bg-red-500/[0.02]"
+                : "border-white/10 hover:border-white/20"
           }`}
         >
-          {/* Label de cor */}
-          {card.cor && (
-            <span
-              className={`mb-2 inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${corClasse}`}
-            >
-              {card.cor}
-            </span>
-          )}
+          {/* Validade status */}
+          <div className="mb-2">
+            <StatusValidade validade={card.validade} />
+          </div>
 
           {/* Título */}
           <h3 className="font-semibold text-sm leading-tight">{card.cargo}</h3>
@@ -44,10 +71,10 @@ export function KanbanCard({ card, index, onEdit, onDelete }: KanbanCardProps) {
             {card.empresa}
           </p>
 
-          {/* Data */}
+          {/* Data de candidatura */}
           {card.data && (
             <p className="mt-1 text-[10px] text-muted-foreground/60">
-              {formatarData(card.data)}
+              Candidatura: {formatarData(card.data)}
             </p>
           )}
 

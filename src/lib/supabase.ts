@@ -14,7 +14,7 @@ export type SupabaseCard = {
   cargo: string;
   link: string;
   data: string;
-  cor: string;
+  validade: string;
   notas: string;
   coluna: string;
   created_at: string;

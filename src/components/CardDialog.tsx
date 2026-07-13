@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { type JobCard, type ColumnId, CORES_ETIQUETA } from "@/types";
+import { type JobCard, type ColumnId } from "@/types";
 
 interface CardDialogProps {
   open: boolean;
@@ -31,7 +31,7 @@ export function CardDialog({
   const [cargo, setCargo] = useState("");
   const [link, setLink] = useState("");
   const [data, setData] = useState("");
-  const [cor, setCor] = useState("");
+  const [validade, setValidade] = useState("");
   const [notas, setNotas] = useState("");
   const [coluna, setColuna] = useState<ColumnId>("saved");
 
@@ -41,7 +41,7 @@ export function CardDialog({
       setCargo(card.cargo);
       setLink(card.link);
       setData(card.data);
-      setCor(card.cor);
+      setValidade(card.validade);
       setNotas(card.notas);
       setColuna(card.coluna);
     } else {
@@ -49,7 +49,7 @@ export function CardDialog({
       setCargo("");
       setLink("");
       setData(new Date().toISOString().split("T")[0]);
-      setCor("");
+      setValidade("");
       setNotas("");
       setColuna("saved");
     }
@@ -64,7 +64,7 @@ export function CardDialog({
       cargo: cargo.trim(),
       link: link.trim(),
       data,
-      cor,
+      validade,
       notas: notas.trim(),
       coluna,
     });
@@ -125,34 +125,19 @@ export function CardDialog({
             </div>
 
             <div className="space-y-2">
-              <Label>Etiqueta</Label>
-              <div className="flex flex-wrap gap-1.5">
-                {Object.entries(CORES_ETIQUETA).map(([nome, classe]) => (
-                  <button
-                    key={nome}
-                    type="button"
-                    onClick={() => setCor(cor === nome ? "" : nome)}
-                    className={`h-6 w-6 rounded-full transition-all ${
-                      classe
-                    } ${
-                      cor === nome
-                        ? "ring-2 ring-white ring-offset-1 ring-offset-background scale-110"
-                        : "opacity-60 hover:opacity-100"
-                    }`}
-                    title={nome}
-                  />
-                ))}
-                {cor && (
-                  <button
-                    type="button"
-                    onClick={() => setCor("")}
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] text-muted-foreground hover:text-foreground"
-                    title="Limpar"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
+              <Label htmlFor="validade">
+                Validade
+              </Label>
+              <Input
+                id="validade"
+                type="date"
+                value={validade}
+                onChange={(e) => setValidade(e.target.value)}
+                className={validade && validade <= new Date().toISOString().split("T")[0] ? "border-red-500/50" : ""}
+              />
+              {validade && validade <= new Date().toISOString().split("T")[0] && (
+                <p className="text-[10px] text-red-400">Vencida — será movida para Encerradas</p>
+              )}
             </div>
           </div>
 
