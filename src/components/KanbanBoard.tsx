@@ -4,16 +4,18 @@ import {
   Droppable,
   type DropResult,
 } from "@hello-pangea/dnd";
-import { Plus, Database, AlertCircle } from "lucide-react";
+import { Plus, Database, AlertCircle, LogOut, User } from "lucide-react";
 
 import { type JobCard, type ColumnId, COLUNAS } from "@/types";
 import { useSupabaseCards } from "@/hooks/useSupabaseCards";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { KanbanColumn } from "./KanbanColumn";
 import { CardDialog } from "./CardDialog";
 import { ExportButton } from "./ExportButton";
 
 export function KanbanBoard() {
+  const { user, signOut } = useAuth();
   const {
     cards,
     loading,
@@ -173,10 +175,23 @@ export function KanbanBoard() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground mr-1">
+              <User className="h-3 w-3" />
+              <span className="max-w-[140px] truncate">{user?.email}</span>
+            </div>
             <ExportButton cards={cards} />
             <Button onClick={handleNew} size="sm">
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Nova candidatura</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              title="Sair"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>

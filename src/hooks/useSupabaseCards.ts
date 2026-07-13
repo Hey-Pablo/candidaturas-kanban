@@ -1,8 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase, type SupabaseCard } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 import type { JobCard, ColumnId } from "@/types";
 
-function gerarBoardId(): string {
+function gerarBoardId(userId?: string): string {
+  // Se tem usuário logado, usa o UUID dele como board_id
+  if (userId) return userId;
+  // Fallback: gera um board_id local (legado)
   let id = localStorage.getItem("kanban-board-id");
   if (!id) {
     id = crypto.randomUUID?.() ?? Math.random().toString(36).slice(2, 18);
@@ -25,17 +29,20 @@ function toJobCard(row: SupabaseCard): JobCard {
 }
 
 export function useSupabaseCards() {
+  const { user } = useAuth();
   const [cards, setCards] = useState<JobCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [tabelaExiste, setTabelaExiste] = useState(true);
-  const boardId = gerarBoardId();
+  const boardId = gerarBoardId(user?.id);
 
   const carregarCards = useCallback(async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from("cards")
         .select("*")
-        .eq("board_id", boardId);
+        .eq("board_id", boardId)
+        .order("created_at", { ascending: false });
 
       if (error) {
         if (
@@ -87,7 +94,7 @@ export function useSupabaseCards() {
       }
 
       const novoCard = toJobCard(data as SupabaseCard);
-      setCards((prev) => [...prev, novoCard]);
+      setCards((prev) => [novoCard, ...prev]);
       return novoCard.id;
     },
     [boardId]
@@ -152,7 +159,6 @@ export function useSupabaseCards() {
 
       if (error) {
         console.error("Erro ao mover card:", error);
-        // Reverte em caso de erro
         carregarCards();
       }
     },
