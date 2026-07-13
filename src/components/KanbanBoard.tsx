@@ -166,8 +166,13 @@ export function KanbanBoard() {
       <header className="sticky top-0 z-40 border-b border-white/10 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2">
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-7 w-7 rounded-lg object-contain"
+            />
             <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-              📋 Candidaturas
+              Candidaturas
             </h1>
             <span className="hidden sm:inline-flex items-center gap-1 text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full">
               <Database className="h-3 w-3" />

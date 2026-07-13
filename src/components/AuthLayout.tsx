@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { ClipboardList } from "lucide-react";
 
 interface AuthLayoutProps {
   title: string;
@@ -16,8 +15,12 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
         <div className="bg-card border border-white/10 rounded-xl p-6 sm:p-8 space-y-6 shadow-2xl">
           {/* Icon + Title */}
           <div className="text-center space-y-3">
-            <div className="mx-auto h-14 w-14 rounded-xl bg-indigo-500/15 flex items-center justify-center">
-              <ClipboardList className="h-7 w-7 text-indigo-400" />
+            <div className="mx-auto h-16 w-16 rounded-xl bg-indigo-500/10 flex items-center justify-center p-1.5">
+              <img
+                src="/logo.png"
+                alt="Candidaturas Kanban"
+                className="h-full w-full object-contain rounded-lg"
+              />
             </div>
             <div className="space-y-1">
               <h1 className="text-xl font-bold">{title}</h1>
